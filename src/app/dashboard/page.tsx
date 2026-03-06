@@ -49,12 +49,6 @@ export default function Dashboard() {
         }
     };
 
-    const handleLogout = () => {
-        document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        router.push('/login');
-        router.refresh();
-    };
-
     return (
         <div className="container" style={{ marginTop: '3rem', position: 'relative' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
@@ -63,12 +57,9 @@ export default function Dashboard() {
                     <p style={{ color: 'var(--text-muted)' }}>Track and manage your factory visitor registrations.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <Link href="/dashboard/new-request" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '14px' }}>
+                    <Link href="/dashboard/new-request" className="btn btn-primary" style={{ padding: '0.75rem 2rem', borderRadius: '50px', fontWeight: 600 }}>
                         + Create New Request
                     </Link>
-                    <button onClick={handleLogout} className="btn btn-secondary" style={{ borderRadius: '14px' }}>
-                        Logout
-                    </button>
                 </div>
             </div>
 

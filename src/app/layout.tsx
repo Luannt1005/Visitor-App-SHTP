@@ -1,8 +1,8 @@
 import "./globals.css";
 import Link from 'next/link';
-import Image from 'next/image';
 import { cookies } from 'next/headers';
 import { verifyAuth } from '@/lib/auth';
+import UserProfile from '@/components/UserProfile';
 
 export const metadata = {
   title: "MIL | Factory Entry Registration",
@@ -77,27 +77,7 @@ export default async function RootLayout({
                   }}>Sign Up</Link>
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', lineHeight: 1.2 }}>{user.name || user.email.split('@')[0]}</span>
-                    <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{user.role}</span>
-                  </div>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: 'white',
-                    color: '#db011c',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '800',
-                    fontSize: '1rem',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                  }}>
-                    {(user.name || user.email).charAt(0).toUpperCase()}
-                  </div>
-                </div>
+                <UserProfile user={user} />
               )}
             </div>
           </nav>
