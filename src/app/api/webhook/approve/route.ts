@@ -4,21 +4,30 @@ import { supabase } from '@/lib/supabase';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { approval_id, status } = body;
 
-        if (!approval_id || !status) {
-            return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+        // Support both 'approval_id' (our legacy) and 'id' (from Supabase record)
+        const approvalId = (body.approval_id || body.id || "").toString().trim();
+        const status = (body.status || "").toString().trim();
+
+        if (!approvalId || !status) {
+            console.error('Missing parameters in webhook:', body);
+            return NextResponse.json({
+                error: 'Missing parameters',
+                received: { approvalId, status },
+                body_received: body
+            }, { status: 400 });
         }
 
         // 1. Update the specific approval record
         const { data: updatedApproval, error: updateError } = await supabase
             .from('request_approvals')
             .update({ status })
-            .eq('id', approval_id)
+            .eq('id', approvalId)
             .select('request_id')
             .single();
 
         if (updateError) {
+            console.error('Supabase update error:', updateError);
             return NextResponse.json({ error: updateError.message }, { status: 500 });
         }
 
