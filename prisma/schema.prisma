@@ -1,0 +1,88 @@
+// This is your Prisma schema file.
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String
+  name       String
+  role       String   @default("USER") // ADMIN, USER (Simplified roles)
+  department String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  visitorRequests VisitorRequest[]
+}
+
+// Dynamic Room Areas (e.g. AME Office L4M, Share Function Office L6M)
+model RoomArea {
+  id            String   @id @default(uuid())
+  category      String   // e.g., 'Common Office', 'AME', 'ENG', 'MFG', 'Quality'
+  name          String   // e.g., 'Share Function Office L6M'
+  approverEmail String?  // The email responsible for approving access to this specific room
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  requestApprovals RequestApproval[]
+}
+
+// Master Request
+model VisitorRequest {
+  id             String   @id @default(uuid())
+  submitterId    String
+  submitter      User     @relation(fields: [submitterId], references: [id])
+  status         String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  // Basic info
+  visitorName      String
+  visitorTitle     String?
+  currentCompany   String?
+  startDate        DateTime
+  endDate          DateTime
+  purposeOfVisit   String?
+  visitorCategory  String?
+
+  // Generic JSON for misc questions (Meal, Tour, Cost Center)
+  details          String
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  approvals      RequestApproval[]
+}
+
+// Approval Links (Workflow)
+// 1 Request can have multiple RequestApprovals (e.g., if checking 3 rooms, 3 approvals are generated)
+model RequestApproval {
+  id             String       @id @default(uuid())
+  requestId      String
+  request        VisitorRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
+  roomAreaId     String
+  roomArea       RoomArea     @relation(fields: [roomAreaId], references: [id])
+  
+  status         String       @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  // Snapshot of who is supposed to approve this when requested
+  approverEmail  String?
+  
+  // If acted upon, capture action timestamp
+  actedAt        DateTime?
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([requestId, roomAreaId])
+}
