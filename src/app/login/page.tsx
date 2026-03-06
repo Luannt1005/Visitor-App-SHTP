@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get('redirect');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +24,11 @@ export default function LoginPage() {
 
             if (res.ok) {
                 const data = await res.json();
-                if (data.user.role === 'ADMIN') {
+
+                // If there's a redirect param, use it, otherwise default to role-based dashboard
+                if (redirect) {
+                    router.push(redirect);
+                } else if (data.user.role === 'ADMIN') {
                     router.push('/admin');
                 } else {
                     router.push('/dashboard');

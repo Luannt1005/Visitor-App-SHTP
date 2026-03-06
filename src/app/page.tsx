@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 
-export default function Home() {
+export default async function Home() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('auth_token')?.value;
+
+  // If no token, redirect to login which will then redirect back to new-request
+  const requestLink = token ? "/dashboard/new-request" : "/login?redirect=/dashboard/new-request";
+
   return (
     <div className="container" style={{ padding: '6rem 2rem' }}>
       <section style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
@@ -13,11 +20,8 @@ export default function Home() {
         </p>
 
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-          <Link href="/register" className="btn btn-primary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.125rem' }}>
-            Register Now
-          </Link>
-          <Link href="/login" className="btn btn-secondary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.125rem' }}>
-            User Login
+          <Link href={requestLink} className="btn btn-primary" style={{ padding: '1.25rem 3.5rem', fontSize: '1.25rem', borderRadius: '50px', boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4)', textDecoration: 'none', fontWeight: 700 }}>
+            Create Visitor Request
           </Link>
         </div>
       </section>
