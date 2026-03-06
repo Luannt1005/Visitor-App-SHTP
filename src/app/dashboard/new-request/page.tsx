@@ -38,6 +38,13 @@ export default function NewRequestPage() {
         fetchRooms();
     }, []);
 
+    // Clear room selections if the category is changed to something other than Expat/Business trip
+    useEffect(() => {
+        if (formData.visitorCategory !== 'MIL/TTI Expat / SHTP Business trip') {
+            setFormData(prev => ({ ...prev, roomIds: [] }));
+        }
+    }, [formData.visitorCategory]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -82,6 +89,8 @@ export default function NewRequestPage() {
         acc[room.category].push(room);
         return acc;
     }, {});
+
+    const isExpatCategory = formData.visitorCategory === 'MIL/TTI Expat / SHTP Business trip';
 
     return (
         <div className="container" style={{ marginTop: '2rem', marginBottom: '4rem' }}>
@@ -134,39 +143,45 @@ export default function NewRequestPage() {
                     </div>
                 </div>
 
-                <h2 style={{ fontSize: '1.25rem', marginTop: '3rem', marginBottom: '1.5rem', color: 'var(--text-main)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Area Access (Workflow-based)</h2>
+                {isExpatCategory && (
+                    <div style={{ marginTop: '3rem', animation: 'fadeIn 0.5s ease' }}>
+                        <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--text-main)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Area Access (Workflow-based)</h2>
 
-                {Object.entries(groupedRooms).map(([category, items]: any) => (
-                    <div key={category} style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{category}</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-                            {items.map((room: any) => (
-                                <label key={room.id} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                    background: formData.roomIds.includes(room.id) ? 'var(--primary-dark)' : '#f8fafc',
-                                    padding: '12px 16px',
-                                    borderRadius: '12px',
-                                    cursor: 'pointer',
-                                    border: formData.roomIds.includes(room.id) ? '1px solid var(--primary)' : '1px solid var(--border)',
-                                    transition: 'all 0.2s'
-                                }}>
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.roomIds.includes(room.id)}
-                                        onChange={() => toggleRoom(room.id)}
-                                        style={{ accentColor: 'var(--primary)', width: '18px', height: '18px' }}
-                                    />
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-main)' }}>{room.name}</span>
-                                        {room.approver_email && <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Approver: {room.approver_email}</span>}
-                                    </div>
-                                </label>
-                            ))}
-                        </div>
+                        {Object.entries(groupedRooms).map(([category, items]: any) => (
+                            <div key={category} style={{ marginBottom: '1.5rem' }}>
+                                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{category}</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                                    {items.map((room: any) => (
+                                        <label key={room.id} style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            background: formData.roomIds.includes(room.id) ? '#db011c' : '#f8fafc',
+                                            padding: '12px 16px',
+                                            borderRadius: '12px',
+                                            cursor: 'pointer',
+                                            color: formData.roomIds.includes(room.id) ? 'white' : 'var(--text-main)',
+                                            border: formData.roomIds.includes(room.id) ? '1px solid #db011c' : '1px solid var(--border)',
+                                            transition: 'all 0.2s',
+                                            boxShadow: formData.roomIds.includes(room.id) ? '0 4px 12px rgba(219, 1, 28, 0.2)' : 'none'
+                                        }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.roomIds.includes(room.id)}
+                                                onChange={() => toggleRoom(room.id)}
+                                                style={{ accentColor: 'white', width: '18px', height: '18px' }}
+                                            />
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <span style={{ fontSize: '0.875rem', fontWeight: 700 }}>{room.name}</span>
+                                                {room.approver_email && <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>Approver: {room.approver_email}</span>}
+                                            </div>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
 
                 <h2 style={{ fontSize: '1.25rem', marginTop: '3rem', marginBottom: '1.5rem', color: 'var(--text-main)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Other Requirements</h2>
 
@@ -193,10 +208,26 @@ export default function NewRequestPage() {
                     </div>
                 )}
 
-                <button type="submit" className="btn btn-primary" style={{ marginTop: '2.5rem', padding: '1.25rem 2.5rem', fontSize: '1.125rem' }} disabled={loading}>
+                <button type="submit" className="btn" style={{
+                    marginTop: '2.5rem',
+                    padding: '1.25rem 3rem',
+                    fontSize: '1.125rem',
+                    background: '#db011c',
+                    color: 'white',
+                    fontWeight: 700,
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 20px rgba(219, 1, 28, 0.3)'
+                }} disabled={loading}>
                     {loading ? 'Submitting...' : 'Submit Request for Approval'}
                 </button>
             </form>
+
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
         </div>
     );
 }
