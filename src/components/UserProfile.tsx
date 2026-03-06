@@ -18,8 +18,8 @@ export default function UserProfile({ user }: { user: { name?: string, email: st
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const handleLogout = () => {
-        document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    const handleLogout = async () => {
+        await fetch('/api/auth/logout', { method: 'POST' });
         router.push('/login');
         router.refresh();
     };
