@@ -99,7 +99,7 @@ export default function NewRequestPage() {
             <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '2.5rem', background: '#ffffff' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--text-main)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Basic Information</h2>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                     <div className="form-group">
                         <label>Visitor's Full Name *</label>
                         <input type="text" className="input-field" required value={formData.visitorName} onChange={e => setFormData({ ...formData, visitorName: e.target.value })} />
@@ -131,12 +131,12 @@ export default function NewRequestPage() {
                             <option>Interviewee</option>
                         </select>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <div className="form-group" style={{ flex: 1 }}>
+                    <div className="form-group-row" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div className="form-group" style={{ flex: '1 1 150px' }}>
                             <label>Start Date *</label>
                             <input type="date" className="input-field" required value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })} />
                         </div>
-                        <div className="form-group" style={{ flex: 1 }}>
+                        <div className="form-group" style={{ flex: '1 1 150px' }}>
                             <label>End Date *</label>
                             <input type="date" className="input-field" required value={formData.endDate} onChange={e => setFormData({ ...formData, endDate: e.target.value })} />
                         </div>

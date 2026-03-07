@@ -71,12 +71,12 @@ export default function AdminDashboard() {
 
     return (
         <div className="container" style={{ marginTop: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                 <div>
                     <h1 className="heading" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Admin Dashboard</h1>
                     <p style={{ color: '#94a3b8' }}>Overall management of visitor requests and factory access areas.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                     <Link href="/admin/rooms" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
                         Manage Rooms & Emails
                     </Link>

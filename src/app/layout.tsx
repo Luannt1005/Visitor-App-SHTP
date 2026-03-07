@@ -37,7 +37,7 @@ export default async function RootLayout({
           boxShadow: '0 4px 20px rgba(219, 1, 28, 0.25)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
-          <nav className="container" style={{
+          <nav className="container nav-container" style={{
             height: '75px',
             display: 'flex',
             alignItems: 'center',
@@ -51,12 +51,12 @@ export default async function RootLayout({
               />
             </Link>
 
-            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            <div className="nav-links-wrapper" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
               <Link href="/dashboard" className="nav-link" style={{ color: 'white', fontWeight: 600 }}>Dashboard</Link>
               {user?.role === 'ADMIN' && <Link href="/admin" className="nav-link" style={{ color: 'white', fontWeight: 600 }}>Admin Portal</Link>}
 
               {!user ? (
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                   <Link href="/login" style={{
                     color: 'white',
                     textDecoration: 'none',

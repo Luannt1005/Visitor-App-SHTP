@@ -51,12 +51,12 @@ export default function Dashboard() {
 
     return (
         <div className="container" style={{ marginTop: '3rem', position: 'relative' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <div>
                     <h1 className="heading" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>My Applications</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Track and manage your factory visitor registrations.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                     <Link href="/dashboard/new-request" className="btn btn-primary" style={{ padding: '0.75rem 2rem', borderRadius: '50px', fontWeight: 600 }}>
                         + Create New Request
                     </Link>
@@ -155,7 +155,7 @@ export default function Dashboard() {
                     >
                         <div
                             className="glass-panel"
-                            style={{ width: '600px', maxHeight: '90vh', overflowY: 'auto', background: '#fff', padding: '0', position: 'relative' }}
+                            style={{ width: '600px', maxWidth: '95vw', maxHeight: '90vh', overflowY: 'auto', background: '#fff', padding: '0', position: 'relative' }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: '#fff', zIndex: 10 }}>
@@ -169,12 +169,12 @@ export default function Dashboard() {
                             </div>
 
                             <div style={{ padding: '2rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
                                     <div>
                                         <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '4px' }}>{selectedRequest.visitor_name}</h3>
                                         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{selectedRequest.visitor_title} @ {selectedRequest.current_company}</p>
                                     </div>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'left' }}>
                                         <span style={{
                                             padding: '8px 18px',
                                             borderRadius: '30px',
@@ -189,7 +189,7 @@ export default function Dashboard() {
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginBottom: '2.5rem' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>Visit Dates</label>
                                         <p style={{ fontWeight: 600 }}>{new Date(selectedRequest.start_date).toLocaleDateString()} — {new Date(selectedRequest.end_date).toLocaleDateString()}</p>
