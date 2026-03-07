@@ -52,7 +52,7 @@ export default async function RootLayout({
             </Link>
 
             <div className="nav-links-wrapper" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-              <Link href="/dashboard" className="nav-link" style={{ color: 'white', fontWeight: 600 }}>Dashboard</Link>
+              <Link href="/dashboard" className="nav-link" style={{ color: 'white', fontWeight: 600 }}>My Request</Link>
               {user?.role === 'ADMIN' && <Link href="/admin" className="nav-link" style={{ color: 'white', fontWeight: 600 }}>Admin Portal</Link>}
 
               {!user ? (
