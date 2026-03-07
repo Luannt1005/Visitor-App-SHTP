@@ -46,9 +46,26 @@ export default function AdminDashboard() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'APPROVED': return '#4ade80';
-            case 'REJECTED': return '#f87171';
-            default: return '#fbbf24';
+            case 'COMPLETE':
+            case 'APPROVED': return '#10b981';
+            case 'REJECTED': return '#ef4444';
+            case 'IN PROCESS': return '#f59e0b';
+            default: return '#94a3b8';
+        }
+    };
+
+    const handleUpdateRoomStatus = async (approvalId: string, status: string) => {
+        try {
+            const res = await fetch('/api/admin/requests', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'ROOM_APPROVAL', approvalId, status }),
+            });
+            if (res.ok) {
+                fetchRequests();
+            }
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -97,10 +114,48 @@ export default function AdminDashboard() {
                                 </td>
                                 <td style={{ padding: '1.5rem' }}>
                                     {request.request_approvals?.length > 0 ? (
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                             {request.request_approvals.map((app: any) => (
-                                                <div key={app.id} style={{ fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <span style={{ color: getStatusColor(app.status) }}>●</span> {app.room_areas?.name}: {app.approver_email}
+                                                <div key={app.id} style={{
+                                                    fontSize: '0.75rem',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    gap: '12px',
+                                                    padding: '4px 8px',
+                                                    background: 'rgba(0,0,0,0.02)',
+                                                    borderRadius: '6px'
+                                                }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <span style={{ color: getStatusColor(app.status), fontSize: '10px' }}>●</span>
+                                                        <span style={{ fontWeight: 500 }}>{app.room_areas?.name}</span>
+                                                    </div>
+                                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                                        <button
+                                                            onClick={() => handleUpdateRoomStatus(app.id, 'APPROVED')}
+                                                            style={{
+                                                                padding: '2px 6px',
+                                                                fontSize: '10px',
+                                                                cursor: 'pointer',
+                                                                border: app.status === 'APPROVED' ? '1px solid #10b981' : '1px solid #ccc',
+                                                                background: app.status === 'APPROVED' ? '#10b981' : 'white',
+                                                                color: app.status === 'APPROVED' ? 'white' : 'black',
+                                                                borderRadius: '4px'
+                                                            }}
+                                                        >Approve</button>
+                                                        <button
+                                                            onClick={() => handleUpdateRoomStatus(app.id, 'REJECTED')}
+                                                            style={{
+                                                                padding: '2px 6px',
+                                                                fontSize: '10px',
+                                                                cursor: 'pointer',
+                                                                border: app.status === 'REJECTED' ? '1px solid #ef4444' : '1px solid #ccc',
+                                                                background: app.status === 'REJECTED' ? '#ef4444' : 'white',
+                                                                color: app.status === 'REJECTED' ? 'white' : 'black',
+                                                                borderRadius: '4px'
+                                                            }}
+                                                        >Reject</button>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -122,8 +177,8 @@ export default function AdminDashboard() {
                                 </td>
                                 <td style={{ padding: '1.5rem' }}>
                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                        <button onClick={() => handleUpdateStatus(request.id, 'APPROVED')} className="btn btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>Approve</button>
-                                        <button onClick={() => handleUpdateStatus(request.id, 'REJECTED')} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>Reject</button>
+                                        <button onClick={() => handleUpdateStatus(request.id, 'COMPLETE')} className="btn btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: '#10b981' }}>Force Complete</button>
+                                        <button onClick={() => handleUpdateStatus(request.id, 'REJECTED')} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>Force Reject</button>
                                     </div>
                                 </td>
                             </tr>

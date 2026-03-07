@@ -39,14 +39,17 @@ export async function POST(request: Request) {
             .eq('request_id', requestId);
 
         if (allApprovals) {
-            const allApproved = allApprovals.every(a => a.status === 'APPROVED');
+            const allProcessed = allApprovals.every(a => a.status === 'APPROVED' || a.status === 'REJECTED');
             const anyRejected = allApprovals.some(a => a.status === 'REJECTED');
 
-            let finalStatus = 'PENDING';
-            if (anyRejected) finalStatus = 'REJECTED';
-            else if (allApproved) finalStatus = 'APPROVED';
+            let finalStatus = 'IN PROCESS';
+            if (anyRejected) {
+                finalStatus = 'REJECTED';
+            } else if (allProcessed) {
+                finalStatus = 'COMPLETE';
+            }
 
-            if (finalStatus !== 'PENDING') {
+            if (finalStatus !== 'IN PROCESS') {
                 await supabase
                     .from('visitor_requests')
                     .update({ status: finalStatus })

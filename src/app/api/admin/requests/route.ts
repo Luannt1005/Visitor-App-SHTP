@@ -65,11 +65,40 @@ export async function PATCH(request: Request) {
         }
 
         const body = await request.json();
-        const { id, status } = body;
+        const { id, type, ...updates } = body;
+
+        if (type === 'ROOM_APPROVAL') {
+            const { approvalId, status } = updates;
+            const { data: updatedApproval, error: roomError } = await supabase
+                .from('request_approvals')
+                .update({ status })
+                .eq('id', approvalId)
+                .select('request_id')
+                .single();
+
+            if (roomError) return NextResponse.json({ error: roomError.message }, { status: 500 });
+
+            // Sync overall status after manual admin room update
+            const { data: allApps } = await supabase
+                .from('request_approvals')
+                .select('status')
+                .eq('request_id', updatedApproval.request_id);
+
+            if (allApps) {
+                const anyRejected = allApps.some(a => a.status === 'REJECTED');
+                const allDone = allApps.every(a => a.status === 'APPROVED' || a.status === 'REJECTED');
+                let finalStatus = 'IN PROCESS';
+                if (anyRejected) finalStatus = 'REJECTED';
+                else if (allDone) finalStatus = 'COMPLETE';
+
+                await supabase.from('visitor_requests').update({ status: finalStatus }).eq('id', updatedApproval.request_id);
+            }
+            return NextResponse.json({ message: 'Room status updated' });
+        }
 
         const { data, error } = await supabase
             .from('visitor_requests')
-            .update({ status })
+            .update(updates)
             .eq('id', id)
             .select();
 
@@ -77,7 +106,7 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ message: 'Status updated successfully', data }, { status: 200 });
+        return NextResponse.json({ message: 'Request updated successfully', data }, { status: 200 });
     } catch (err) {
         console.error('Update status error:', err);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

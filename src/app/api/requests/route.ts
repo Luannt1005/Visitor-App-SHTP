@@ -40,7 +40,7 @@ export async function POST(request: Request) {
                 purpose_of_visit: purposeOfVisit,
                 visitor_category: visitorCategory,
                 details, // JSON data
-                status: 'PENDING',
+                status: 'IN PROCESS',
             })
             .select('id')
             .single();
